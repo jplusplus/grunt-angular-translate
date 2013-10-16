@@ -34,26 +34,36 @@ module.exports = function(grunt) {
     i18nextract: {
 
       default_options: {
-        src:      [ 'test/fixtures/*.html', 'test/fixtures/*.js' ],
+        src:      [ 'test/fixtures/index.html', 'test/fixtures/*.js' ],
         lang:     ['fr_FR'],
         prefix:   '00_',
         suffix:   '.json',
         dest:     'tmp'
       },
-
-      exists_i18n : {
-        src:      [ 'test/fixtures/*.html', 'test/fixtures/*.js' ],
+      custom_interpolate_options: {
+        src:      [ 'test/fixtures/indexCustomInterpolate.html', 'test/fixtures/*.js' ],
         lang:     ['fr_FR'],
         prefix:   '01_',
+        suffix:   '.json',
+        interpolate: {
+          startSymbol: '[[',
+          endSymbol: ']]'
+        },
+        dest:     'tmp'
+      },
+      exists_i18n : {
+        src:      [ 'test/fixtures/index.html', 'test/fixtures/*.js' ],
+        lang:     ['fr_FR'],
+        prefix:   '02_',
         suffix:   '.json',   
         dest:     'tmp',
         source:   'test/fixtures/exists_i18n.json' // Use to generate different output file
       },
 
       deleted_i18n : {
-        src:      [ 'test/fixtures/*.html', 'test/fixtures/*.js' ],
+        src:      [ 'test/fixtures/index.html', 'test/fixtures/*.js' ],
         lang:     ['fr_FR'],
-        prefix:   '02_',
+        prefix:   '03_',
         suffix:   '.json',   
         dest:     'tmp',
         source:   'test/fixtures/deleted_i18n.json' // Use to generate different output file
