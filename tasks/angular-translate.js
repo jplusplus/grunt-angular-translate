@@ -44,8 +44,10 @@ module.exports = function ( grunt ) {
     // Use to match $translate('TRANSLATION')
         javascriptRegex = /\$translate\([^'"]?['"]([^'"]*)['"][^'"]*\)/gi,
     // Use to match {{'TRANSLATION' | translate}}
-        filterRegexStr  = interpolate.startSymbol + "\\s*['\"]([^\\']*)['\"]\\s*\\|\\s*translate\\s*" + interpolate.endSymbol, 
+        filterRegexStr  = interpolate.startSymbol + "\\W*['\"]([^'\"]*)['\"]\\s*\\|\\s*translate\\W*" + interpolate.endSymbol, 
         filterRegex     = new RegExp(filterRegexStr,'gi');
+
+    grunt.log.debug('filterRegex: ' + filterRegex);
 
     if (!grunt.file.exists(dest)) {
       grunt.file.mkdir( dest );
@@ -54,7 +56,6 @@ module.exports = function ( grunt ) {
     // Parse all files to extract translations
     files.forEach(function(file) {
       var content = grunt.file.read(file), r;
-
       while ((r = filterRegex.exec(content)) !== null) {
         if (r.length === 2) {
           results[ grunt.util._(r[1]).strip() ] = '';
