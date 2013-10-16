@@ -10,13 +10,7 @@
 
 module.exports = function ( grunt ) {
 
-  var path            = require('path'),
-      // Use to match {{'TRANSLATION' | translate}}
-      filterRegex     = /{{\s*['"]([^\']*)['"]\s*\|\s*translate\s*}}/gi,
-      // Use to match <a href="#" translate>TRANSLATION</a>
-      directiveRegex  = /<[^>]*translate[^>]*>([^<]*)<\/[^>]*>/gi,
-      // Use to match $translate('TRANSLATION')
-      javascriptRegex = /\$translate\([^'"]['"]([^'"]*)['"][^'"]*\)/gi;
+  var path            = require('path');
 
   grunt.registerMultiTask('i18nextract', 'Generate json language file for angular-translate project', function() {
     // Require lang array with length >= 1
@@ -24,13 +18,34 @@ module.exports = function ( grunt ) {
       grunt.fail('No lang set for i18nextract');
     }
 
-    var files     = grunt.file.expand( this.data.src ),
-        dest      = this.data.dest || '.',
-        source    = this.data.source || '',
-        prefix    = this.data.prefix || '',
-        safeMode  = this.data.safeMode ? true : false,
-        suffix    = this.data.suffix || '.json',
-        results   = {};
+    var files       = grunt.file.expand( this.data.src ),
+        dest        = this.data.dest || '.',
+        source      = this.data.source || '',
+        prefix      = this.data.prefix || '',
+        safeMode    = this.data.safeMode ? true : false,
+        suffix      = this.data.suffix || '.json',
+        results     = {},
+        interpolate = { startSymbol: '{{', endSymbol: '}}'};
+
+    if (this.data.interpolate) {
+      var startSymbol = this.data.interpolate.startSymbol,
+          endSymbol   = this.data.interpolate.endSymbol;
+      if (startSymbol && startSymbol.length) {
+        interpolate.startSymbol = startSymbol;
+      }
+
+      if (endSymbol && endSymbol.length) {
+        interpolate.endSymbol = endSymbol;
+      }
+    }
+    // RegExp declarations & instanciation
+    // Use to match <a href="#" translate>TRANSLATION</a>
+    var directiveRegex  = /<[^>]*translate[^>]*>([^<]*)<\/[^>]*>/gi,
+    // Use to match $translate('TRANSLATION')
+        javascriptRegex = /\$translate\([^'"]?['"]([^'"]*)['"][^'"]*\)/gi,
+    // Use to match {{'TRANSLATION' | translate}}
+        filterRegexStr  = interpolate.startSymbol + "\\s*['\"]([^\\']*)['\"]\\s*\\|\\s*translate\\s*" + interpolate.endSymbol, 
+        filterRegex     = new RegExp(filterRegexStr,'gi');
 
     if (!grunt.file.exists(dest)) {
       grunt.file.mkdir( dest );
@@ -38,9 +53,6 @@ module.exports = function ( grunt ) {
 
     // Parse all files to extract translations
     files.forEach(function(file) {
-
-      grunt.log.debug("Process file: " + file);
-
       var content = grunt.file.read(file), r;
 
       while ((r = filterRegex.exec(content)) !== null) {
