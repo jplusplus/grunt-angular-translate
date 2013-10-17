@@ -45,7 +45,7 @@ module.exports = function(grunt) {
         lang:     ['fr_FR'],
         prefix:   '01_',
         suffix:   '.json',
-        interpolate: {
+        interpolation: {
           startSymbol: '[[',
           endSymbol: ']]'
         },

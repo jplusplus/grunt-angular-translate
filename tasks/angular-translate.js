@@ -25,17 +25,17 @@ module.exports = function ( grunt ) {
         safeMode    = this.data.safeMode ? true : false,
         suffix      = this.data.suffix || '.json',
         results     = {},
-        interpolate = { startSymbol: '{{', endSymbol: '}}'};
+        interpolation = { startSymbol: '{{', endSymbol: '}}'};
 
-    if (this.data.interpolate) {
-      var startSymbol = this.data.interpolate.startSymbol,
-          endSymbol   = this.data.interpolate.endSymbol;
+    if (this.data.interpolation) {
+      var startSymbol = this.data.interpolation.startSymbol,
+          endSymbol   = this.data.interpolation.endSymbol;
       if (startSymbol && startSymbol.length) {
-        interpolate.startSymbol = startSymbol;
+        interpolation.startSymbol = startSymbol;
       }
 
       if (endSymbol && endSymbol.length) {
-        interpolate.endSymbol = endSymbol;
+        interpolation.endSymbol = endSymbol;
       }
     }
     // RegExp declarations & instanciation
@@ -44,7 +44,7 @@ module.exports = function ( grunt ) {
     // Use to match $translate('TRANSLATION')
         javascriptRegex = /\$translate\([^'"]?['"]([^'"]*)['"][^'"]*\)/gi,
     // Use to match {{'TRANSLATION' | translate}}
-        filterRegexStr  = interpolate.startSymbol + "\\W*['\"]([^'\"]*)['\"]\\s*\\|\\s*translate\\W*" + interpolate.endSymbol, 
+        filterRegexStr  = interpolation.startSymbol + "\\W*['\"]([^'\"]*)['\"]\\s*\\|\\s*translate\\W*" + interpolation.endSymbol, 
         filterRegex     = new RegExp(filterRegexStr,'gi');
 
     grunt.log.debug('filterRegex: ' + filterRegex);
